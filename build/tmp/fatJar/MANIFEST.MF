@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Implementation-Title: Trade Profiler Engine
+Implementation-Version: 1.0
+Main-Class: com.anim.tradeprofiler.main.MainApp
+
