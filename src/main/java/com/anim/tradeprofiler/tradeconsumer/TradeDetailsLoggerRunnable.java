@@ -14,20 +14,20 @@ public class TradeDetailsLoggerRunnable implements Runnable {
   CountDownLatch latch;
   String filePath;
   Gson gson;
-  TradesAggregator aggregator;
+  EagerTradesAggregator aggregator;
 
   public TradeDetailsLoggerRunnable(BlockingQueue<TradeDetails> queue, String filePath, CountDownLatch latch) {
     this.queue = queue;
     this.filePath = filePath;
     this.gson = new Gson();
-    aggregator = new TradesAggregator(this.gson);
+    aggregator = new EagerTradesAggregator(this.gson);
     this.latch = latch;
   }
 
   @Override
   public void run() {
     try {
-      log.info("Starting to get messages initial quantity " + queue.size());
+      log.info("Continuing to get messages initial quantity " + queue.size());
       while (!queue.isEmpty() || latch.getCount() > 0) {
         TradeDetails tradeDetails = null;
         try {
@@ -39,6 +39,8 @@ public class TradeDetailsLoggerRunnable implements Runnable {
       latch.await();
       log.info("All trades processed");
       log.info("Everything Completed - Shutting down");
+    } catch (InterruptedException interruptedException) {
+      log.info("Interrupted From Await Post processing - Shutting down");
     } catch (Exception exception) {
       throw new RuntimeException(exception);
     }
